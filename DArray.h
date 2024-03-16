@@ -88,7 +88,7 @@ namespace wstd {
 
         void push_back(T newData) {
             if (length == capacity) {
-                resize(capacity + sizeof(T) * 10);
+                resize(sizeof(T) * (capacity * 2));
             }
             data[length] = newData;
             length++;
@@ -105,7 +105,7 @@ namespace wstd {
             for (size_t i = 0; i < length; i++)
                 data[i].~T();
 
-            ::operator delete(data, capacity * sizeof(T));
+            delete[] data;
 
             data = newData;
             capacity = newCapacity;

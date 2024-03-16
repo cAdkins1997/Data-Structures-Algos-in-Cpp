@@ -4,11 +4,19 @@
 
 #include <vector>
 #include <list>
+#include <chrono>
 
 #include "LinkedList.h"
 #include "DArray.h"
 
-using namespace wstd;
+using namespace std::chrono;
+using namespace std::literals;
+
+void benchmark(const time_point<high_resolution_clock>& startTime, const time_point<high_resolution_clock>& stopTime,
+              const char* outputMessage) {
+    duration<long double> dur = stopTime - startTime;
+    std::cout << outputMessage << duration_cast<nanoseconds>(dur) << '\n';
+}
 
 int main() {
     wstd::DArray<int> dArray(10);
@@ -17,47 +25,39 @@ int main() {
     wstd::LinkedList<int> linkedList;
     std::list<int> list;
 
-    clock_t start = clock();
+    auto startTime = high_resolution_clock::now();
 
     for (int i = 0; i < 100000; i++) {
         dArray.push_back(i);
     }
 
-    clock_t end = clock();
-    float seconds = (float)(end - start) / CLOCKS_PER_SEC;
+    auto endTime = high_resolution_clock::now();
+    benchmark(startTime, endTime, "Pushing back into dArray took: ");
 
-    std::cout << "Pushing into dynamic array took " << seconds << '\n';
-
-    start = clock();
+    startTime = high_resolution_clock::now();
 
     for (int i = 0; i < 100000; i++) {
         vector.push_back(i);
     }
 
-    end = clock();
-    seconds = (float)(end - start) / CLOCKS_PER_SEC;
+    endTime = high_resolution_clock::now();
+    benchmark(startTime, endTime, "Pushing back into std::vector took: ");
 
-    std::cout << "Pushing back into std::vector took " << seconds << '\n';
-
-    start = clock();
+    startTime = high_resolution_clock::now();
 
     for (int i = 0; i < 100000; i++) {
         linkedList.append(i);
     }
 
-    end = clock();
-    seconds = (float)(end - start) / CLOCKS_PER_SEC;
+    endTime = high_resolution_clock::now();
+    benchmark(startTime, endTime, "Appending to linked list took: ");
 
-    std::cout << "Appending to linked list " << seconds << '\n';
-
-    start = clock();
+    startTime = high_resolution_clock::now();
 
     for (int i = 0; i < 100000; i++) {
         list.push_back(i);
     }
 
-    end = clock();
-    seconds = (float)(end - start) / CLOCKS_PER_SEC;
-
-    std::cout << "Pushing back into std::list took " << seconds << '\n';
+    endTime = high_resolution_clock::now();
+    benchmark(startTime, endTime, "Appending to std::list took: ");
 }
